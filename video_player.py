@@ -3,6 +3,7 @@ import tkinter.messagebox
 import tkinter.ttk
 import webbrowser
 import sys
+import subprocess
 import datetime
 import json
 import os
@@ -29,6 +30,9 @@ def get_app_data_path():
 BASE_PATH = get_app_data_path()
 HISTORY_FILE = os.path.join(BASE_PATH, "video_parse_history.json")
 FAVORITE_FILE = os.path.join(BASE_PATH, "video_favorite.json")
+
+# VLC 路径
+VLC_PATH = r"D:\Program Files\VideoLAN\VLC\vlc.exe"
 
 
 class VIPVideoApp:
@@ -285,8 +289,8 @@ class VIPVideoApp:
             return
         item = self.favorite_records[idx]
         api = self.parse_apis.get(item.get('api', '默认接口'), self.parse_apis['默认接口'])
-        webbrowser.open(api + item['url'])
-        tkinter.messagebox.showinfo('播放', f'正在播放：{item["title"]}')
+        self._play_with_vlc(api + item['url'])
+        tkinter.messagebox.showinfo('播放', f'正在用 VLC 播放：{item["title"]}')
 
     def del_favorite(self):
         if not self.fav_listbox.curselection():
@@ -316,8 +320,8 @@ class VIPVideoApp:
             return
         r = self.history_records[idx]
         api = self.parse_apis.get(r['api'], self.parse_apis['默认接口'])
-        webbrowser.open(api + r['url'])
-        tkinter.messagebox.showinfo('播放', f'正在播放：{r["title"]}')
+        self._play_with_vlc(api + r['url'])
+        tkinter.messagebox.showinfo('播放', f'正在用 VLC 播放：{r["title"]}')
 
     def delete_selected_history(self):
         if not self.history_listbox.curselection():
@@ -350,6 +354,14 @@ class VIPVideoApp:
         widget.bind('<Enter>', lambda e: widget.config(bg=c2))
         widget.bind('<Leave>', lambda e: widget.config(bg=c1))
 
+    def _play_with_vlc(self, url):
+        """使用本地 VLC 播放器直接播放视频流，不跳转浏览器"""
+        try:
+            subprocess.Popen([VLC_PATH, url], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except Exception as e:
+            tkinter.messagebox.showwarning('提示', f'启动 VLC 失败：{str(e)}\n请确认 VLC 已正确安装')
+            webbrowser.open(url)
+
     def play_video(self):
         url = self.entry_url.get().strip()
         if not url:
@@ -362,7 +374,7 @@ class VIPVideoApp:
         api = self.parse_apis[api_name]
         self.save_history(url, api_name, title)
         self.update_history_listbox()
-        webbrowser.open(api + url)
+        self._play_with_vlc(api + url)
 
     def empty(self):
         self.entry_url.delete(0, 'end')
