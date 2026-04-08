@@ -1,0 +1,10 @@
+.idea/
+*.pyc
+__pycache__/
+test_*.py
+test_resolve.py
+test_vlc.py
+yt-dlp.exe
+video_parse_history.json
+video_favorite.json
+.openclaw/
