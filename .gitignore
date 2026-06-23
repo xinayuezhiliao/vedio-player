@@ -34,3 +34,8 @@ vedio_test*.py
 tests/
 
 __init__.py
+
+
+# === 本地开发辅助 ===
+*.original.py        # 修改前的原版备份
+test_functional.py    # 本地功能测试
