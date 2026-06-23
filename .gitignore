@@ -8,3 +8,29 @@ yt-dlp.exe
 video_parse_history.json
 video_favorite.json
 .openclaw/
+
+
+# === 本项目额外 ===
+# 打包/构建产物
+build/
+dist/
+*.spec
+
+# 应用图标
+movie_icon.ico
+
+# 历史版本文件(只保留主程序 video_player.py)
+vip追剧神器*.py
+VIP追剧神器*.py
+vip电影神器*.py
+
+# 本地测试脚本(已经移到 tests/ 目录,但避免混淆)
+vedio_test*.py
+
+# 本地修改备份(避免被误提交)
+.local_backup/
+
+# PyInstaller bootloader 临时目录
+tests/
+
+__init__.py
